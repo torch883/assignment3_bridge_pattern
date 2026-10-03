@@ -17,7 +17,28 @@ public class Main {
 
     private static void runDemo() {
         runCombinationChecks();
+        checkRuntimeSwitch();
         System.out.println("SUMMARY: " + passed + "/" + total + " PASS");
+    }
+
+    private static void checkRuntimeSwitch() {
+        Circle original = new Circle("C-5", 2, new VectorRenderer());
+        String idBefore = original.getId();
+        int radiusBefore = original.getRadius();
+
+        String before = original.execute();
+        Shape afterSwitch = switchRenderer(original, new RasterRenderer());
+        String after = afterSwitch.execute();
+
+        boolean sameObject = (original == afterSwitch);
+        boolean stateUnchanged = idBefore.equals(afterSwitch.getId())
+                && radiusBefore == original.getRadius();
+        boolean resultsOk = before.equals(VECTOR_CIRCLE) && after.equals(RASTER_CIRCLE);
+
+        String details = "sameObject=" + sameObject + " | stateUnchanged=" + stateUnchanged
+                + "\n   before=" + before + " | after=" + after;
+        String expected = "before=" + VECTOR_CIRCLE + " | after=" + RASTER_CIRCLE;
+        report("T5", sameObject && stateUnchanged && resultsOk, details, expected);
     }
 
     private static void runCombinationChecks() {
@@ -25,6 +46,11 @@ public class Main {
         checkShape("T2", new Circle("C-1", 2, new RasterRenderer()), RASTER_CIRCLE);
         checkShape("T3", new Square("S-1", 3, new VectorRenderer()), VECTOR_SQUARE);
         checkShape("T4", new Square("S-1", 3, new RasterRenderer()), RASTER_SQUARE);
+    }
+
+    private static Shape switchRenderer(Shape shape, Renderer newRenderer) {
+        shape.setImplementation(newRenderer);
+        return shape;
     }
 
     private static void checkShape(String id, Shape shape, String expected) {
