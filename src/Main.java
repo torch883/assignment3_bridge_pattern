@@ -3,6 +3,8 @@ public class Main {
     private static final String RASTER_CIRCLE = "RASTER circle radius=2 bitmap=5x5";
     private static final String VECTOR_SQUARE = "VECTOR square side=3";
     private static final String RASTER_SQUARE = "RASTER square side=3 bitmap=3x3";
+    private static final String ASCII_CIRCLE = "ASCII circle radius=2 art=(o)";
+    private static final String ASCII_SQUARE = "ASCII square side=3 art=[###]";
 
     private static int passed = 0;
     private static int total = 0;
@@ -18,7 +20,13 @@ public class Main {
     private static void runDemo() {
         runCombinationChecks();
         checkRuntimeSwitch();
+        runExtensionChecks();
         System.out.println("SUMMARY: " + passed + "/" + total + " PASS");
+    }
+
+    private static void runExtensionChecks() {
+        checkShape("T6", new Circle("C-1", 2, new AsciiRenderer()), ASCII_CIRCLE);
+        checkShape("T7", new Square("S-1", 3, new AsciiRenderer()), ASCII_SQUARE);
     }
 
     private static void checkRuntimeSwitch() {
